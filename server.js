@@ -200,28 +200,6 @@ const adminschema = new mongoose.Schema({
    
 })
 const Admin = mongoose.model("Admin",adminschema)
-app.post('/admin/signup',async(req,res)=>{
-    try{
-        const {username,password}=req.body
-
-        const hasedpassword=await bcrypt.hash(password,10)
-
-        await Admin.create({
-            username:username,
-            password:hasedpassword,
-            type:"admin"
-        })
-
-        return res.status(200).send({
-            message:"admin created succesfully"
-        })
-    }
-    catch(error){
-        return res.status(500).send({
-            message:"unable to create admin"
-        })
-    }
-})
 app.post('/admin/login',async(req,res)=>{
     try{
     const{username,password}=req.body
