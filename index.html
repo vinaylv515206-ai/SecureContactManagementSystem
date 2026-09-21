@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: #1f2937;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h2 {
+            font-size: 22px;
+        }
+
+        nav button {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 9px 15px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        nav button:hover {
+            background: #1d4ed8;
+        }
+
+        /* CONTAINER */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* HOME */
+        .hero {
+            background: white;
+            text-align: center;
+            padding: 70px 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .hero p {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .hero button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* FORM */
+        .form-box {
+            width: 400px;
+            max-width: 100%;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        .form-box h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .form-box button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-box p {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .form-box a {
+            color: #2563eb;
+            cursor: pointer;
+        }
+
+        /* DASHBOARD */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-header h1 {
+            color: #1f2937;
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* ADD CONTACT */
+        .add-contact {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .add-contact h2 {
+            margin-bottom: 15px;
+        }
+
+        .contact-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .contact-form input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .contact-form button {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* TABLE */
+        .contacts-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        .contacts-box h2 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+        }
+
+        .edit-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        /* MESSAGE */
+        #message {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #1f2937;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 7px;
+            display: none;
+            z-index: 1000;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: white;
+            width: 400px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #6b7280;
+            color: white;
+        }
+
+        /* MOBILE */
+        @media(max-width: 700px) {
+
+            nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav div {
+                text-align: center;
+            }
+
+            .contact-form {
+                flex-direction: column;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            table {
+                min-width: 600px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav>
+
+        <h2>Contact Management System</h2>
+
+        <div>
+
+            <button onclick="showPage('home')">
+                Home
+            </button>
+
+            <button onclick="showPage('login')">
+                User Login
+            </button>
+
+            <button onclick="showPage('signup')">
+                User Signup
+            </button>
+
+            <button onclick="showPage('adminLogin')">
+                Admin
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MESSAGE -->
+
+    <div id="message"></div>
+
+
+    <div class="container">
+
+
+        <!-- HOME -->
+
+        <section id="home" class="page active">
+
+            <div class="hero">
+
+                <h1>Contact Management System</h1>
+
+                <p>
+                    Store and manage your contacts securely.
+                </p>
+
+                <button onclick="showPage('login')">
+                    Get Started
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- USER SIGNUP -->
+
+        <section id="signup" class="page">
+
+            <div class="form-box">
+
+                <h2>User Signup</h2>
+
+                <input
+                    type="text"
+                    id="signupUsername"
+                    placeholder="Enter username"
+                >
+
+                <input
+                    type="password"
+                    id="signupPassword"
+                    placeholder="Enter password"
+                >
+
+                <button onclick="signup()">
+                    Create Account
+                </button>
+
+                <p>
+                    Already have an account?
+                    <a onclick="showPage('login')">
+                        Login
+                    </a>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- USER LOGIN -->
+
+        <section id="login" class="page">
+
+            <div class="form-box">
+
+                <h2>User Login</h2>
+
+                <input
+                    type="text"
+                    id="loginUsername"
+                    placeholder="Enter username"
+                >
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter password"
+                >
+
+                <button onclick="login()">
+                    Login
+                </button>
+
+                <p>
+                    Don't have an account?
+                    <a onclick="showPage('signup')">
+                        Signup
+                    </a>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- USER DASHBOARD -->
+
+        <section id="dashboard" class="page">
+
+            <div class="dashboard-header">
+
+                <h1>User Dashboard</h1>
+
+                <button
+                    class="logout-btn"
+                    onclick="userLogout()"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+
+            <!-- ADD CONTACT -->
+
+            <div class="add-contact">
+
+                <h2>Add Contact</h2>
+
+                <div class="contact-form">
+
+                    <input
+                        type="text"
+                        id="contactName"
+                        placeholder="Contact Name"
+                    >
+
+                    <input
+                        type="text"
+                        id="contactPhone"
+                        placeholder="Phone Number"
+                    >
+
+                    <button onclick="createContact()">
+                        Add Contact
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTACTS -->
+
+            <div class="contacts-box">
+
+                <h2>My Contacts</h2>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Phone Number
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="contactsTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ADMIN LOGIN -->
+
+        <section id="adminLogin" class="page">
+
+            <div class="form-box">
+
+                <h2>Admin Login</h2>
+
+                <input
+                    type="text"
+                    id="adminUsername"
+                    placeholder="Admin Username"
+                >
+
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Admin Password"
+                >
+
+                <button onclick="adminLogin()">
+                    Login as Admin
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ADMIN DASHBOARD -->
+
+        <section id="adminDashboard" class="page">
+
+            <div class="dashboard-header">
+
+                <h1>Admin Dashboard</h1>
+
+                <button
+                    class="logout-btn"
+                    onclick="adminLogout()"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+
+            <div class="contacts-box">
+
+                <h2>All User Contacts</h2>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Phone Number
+                            </th>
+
+                            <th>
+                                User ID
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="adminContactsTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- UPDATE MODAL -->
+
+    <div
+        class="modal"
+        id="updateModal"
+    >
+
+        <div class="modal-box">
+
+            <h2>Update Contact</h2>
+
+            <input
+                type="hidden"
+                id="updateId"
+            >
+
+            <input
+                type="text"
+                id="updateName"
+                placeholder="Contact Name"
+            >
+
+            <input
+                type="text"
+                id="updatePhone"
+                placeholder="Phone Number"
+            >
+
+            <div class="modal-buttons">
+
+                <button
+                    class="save-btn"
+                    onclick="updateContact()"
+                >
+                    Save
+                </button>
+
+                <button
+                    class="cancel-btn"
+                    onclick="closeModal()"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+<script>
+
+    /* =========================
+       BACKEND URL
+    ========================= */
+
+    const API = "http://localhost:3001";
+
+
+    /* =========================
+       PAGE NAVIGATION
+    ========================= */
+
+    function showPage(pageId) {
+
+        document
+            .querySelectorAll(".page")
+            .forEach(page => {
+
+                page.classList.remove("active");
+
+            });
+
+        document
+            .getElementById(pageId)
+            .classList.add("active");
+    }
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    function showMessage(text) {
+
+        const message =
+            document.getElementById("message");
+
+        message.innerText = text;
+
+        message.style.display = "block";
+
+        setTimeout(() => {
+
+            message.style.display = "none";
+
+        }, 3000);
+    }
+
+
+    /* =========================
+       USER SIGNUP
+    ========================= */
+
+    async function signup() {
+
+        const username =
+            document.getElementById(
+                "signupUsername"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "signupPassword"
+            ).value;
+
+        if (!username || !password) {
+
+            showMessage(
+                "Please enter username and password"
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/signup",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                }
+            );
+
+            const data =
+                await response.json();
+
+            showMessage(data.message);
+
+            if (response.ok) {
+
+                document.getElementById(
+                    "signupUsername"
+                ).value = "";
+
+                document.getElementById(
+                    "signupPassword"
+                ).value = "";
+
+                showPage("login");
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to connect to backend"
+            );
+        }
+    }
+
+
+    /* =========================
+       USER LOGIN
+    ========================= */
+
+    async function login() {
+
+        const username =
+            document.getElementById(
+                "loginUsername"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "loginPassword"
+            ).value;
+
+        if (!username || !password) {
+
+            showMessage(
+                "Please enter username and password"
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                }
+            );
+
+            const data =
+                await response.json();
+
+            showMessage(data.message);
+
+            if (data.token) {
+
+                localStorage.setItem(
+                    "userToken",
+                    data.token
+                );
+
+                document.getElementById(
+                    "loginUsername"
+                ).value = "";
+
+                document.getElementById(
+                    "loginPassword"
+                ).value = "";
+
+                showPage("dashboard");
+
+                loadContacts();
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to connect to backend"
+            );
+        }
+    }
+
+
+    /* =========================
+       CREATE CONTACT
+    ========================= */
+
+    async function createContact() {
+
+        const name =
+            document.getElementById(
+                "contactName"
+            ).value.trim();
+
+        const phoneNo =
+            document.getElementById(
+                "contactPhone"
+            ).value.trim();
+
+        if (!name || !phoneNo) {
+
+            showMessage(
+                "Please enter contact details"
+            );
+
+            return;
+        }
+
+        const token =
+            localStorage.getItem("userToken");
+
+        if (!token) {
+
+            showMessage("Please login first");
+
+            showPage("login");
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/create",
+                {
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        /* BEARER JWT */
+
+                        "Authorization":
+                            "Bearer " + token
+                    },
+
+                    body: JSON.stringify({
+                        name: name,
+                        phoneNo: phoneNo
+                    })
+                }
+            );
+
+            const data =
+                await response.text();
+
+            showMessage(data);
+
+            if (response.ok) {
+
+                document.getElementById(
+                    "contactName"
+                ).value = "";
+
+                document.getElementById(
+                    "contactPhone"
+                ).value = "";
+
+                loadContacts();
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to create contact"
+            );
+        }
+    }
+
+
+    /* =========================
+       GET USER CONTACTS
+    ========================= */
+
+    async function loadContacts() {
+
+        const token =
+            localStorage.getItem("userToken");
+
+        if (!token) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/contacts",
+                {
+                    method: "GET",
+
+                    headers: {
+
+                        /* BEARER JWT */
+
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+            if (!response.ok) {
+
+                showMessage(
+                    "Unable to load contacts"
+                );
+
+                return;
+            }
+
+            const contacts =
+                await response.json();
+
+            const table =
+                document.getElementById(
+                    "contactsTable"
+                );
+
+            table.innerHTML = "";
+
+            if (contacts.length === 0) {
+
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="3">
+                            No contacts found
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            contacts.forEach(contact => {
+
+                const row =
+                    document.createElement("tr");
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHTML(contact.name)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(contact.phoneNo)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="edit-btn"
+                            onclick='openUpdateModal(
+                                ${JSON.stringify(contact._id)},
+                                ${JSON.stringify(contact.name)},
+                                ${JSON.stringify(contact.phoneNo)}
+                            )'
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            class="delete-btn"
+                            onclick='deleteContact(
+                                ${JSON.stringify(contact._id)}
+                            )'
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+                `;
+
+                table.appendChild(row);
+
+            });
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to get contacts"
+            );
+        }
+    }
+
+
+    /* =========================
+       OPEN UPDATE MODAL
+    ========================= */
+
+    function openUpdateModal(
+        id,
+        name,
+        phone
+    ) {
+
+        document.getElementById(
+            "updateId"
+        ).value = id;
+
+        document.getElementById(
+            "updateName"
+        ).value = name;
+
+        document.getElementById(
+            "updatePhone"
+        ).value = phone;
+
+        document.getElementById(
+            "updateModal"
+        ).style.display = "flex";
+    }
+
+
+    /* =========================
+       CLOSE MODAL
+    ========================= */
+
+    function closeModal() {
+
+        document.getElementById(
+            "updateModal"
+        ).style.display = "none";
+    }
+
+
+    /* =========================
+       UPDATE CONTACT
+    ========================= */
+
+    async function updateContact() {
+
+        const id =
+            document.getElementById(
+                "updateId"
+            ).value;
+
+        const name =
+            document.getElementById(
+                "updateName"
+            ).value.trim();
+
+        const phoneNo =
+            document.getElementById(
+                "updatePhone"
+            ).value.trim();
+
+        const token =
+            localStorage.getItem("userToken");
+
+        if (!name || !phoneNo) {
+
+            showMessage(
+                "Please enter all details"
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/update/" + id,
+                {
+                    method: "PUT",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        /* BEARER JWT */
+
+                        "Authorization":
+                            "Bearer " + token
+                    },
+
+                    body: JSON.stringify({
+                        name: name,
+                        phoneNo: phoneNo
+                    })
+                }
+            );
+
+            const data =
+                await response.json();
+
+            showMessage(data.message);
+
+            if (response.ok) {
+
+                closeModal();
+
+                loadContacts();
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to update contact"
+            );
+        }
+    }
+
+
+    /* =========================
+       DELETE CONTACT
+    ========================= */
+
+    async function deleteContact(id) {
+
+        if (
+            !confirm(
+                "Are you sure you want to delete this contact?"
+            )
+        ) {
+            return;
+        }
+
+        const token =
+            localStorage.getItem("userToken");
+
+        try {
+
+            const response = await fetch(
+                API + "/delete/" + id,
+                {
+                    method: "DELETE",
+
+                    headers: {
+
+                        /* BEARER JWT */
+
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+            const data =
+                await response.text();
+
+            showMessage(data);
+
+            if (response.ok) {
+
+                loadContacts();
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to delete contact"
+            );
+        }
+    }
+
+
+    /* =========================
+       USER LOGOUT
+    ========================= */
+
+    function userLogout() {
+
+        localStorage.removeItem(
+            "userToken"
+        );
+
+        showMessage(
+            "User logged out successfully"
+        );
+
+        showPage("login");
+    }
+
+
+    /* =========================
+       ADMIN LOGIN
+    ========================= */
+
+    async function adminLogin() {
+
+        const username =
+            document.getElementById(
+                "adminUsername"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "adminPassword"
+            ).value;
+
+        if (!username || !password) {
+
+            showMessage(
+                "Please enter admin credentials"
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/admin/login",
+                {
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                }
+            );
+
+            const data =
+                await response.json();
+
+            showMessage(data.message);
+
+            if (data.token) {
+
+                localStorage.setItem(
+                    "adminToken",
+                    data.token
+                );
+
+                document.getElementById(
+                    "adminUsername"
+                ).value = "";
+
+                document.getElementById(
+                    "adminPassword"
+                ).value = "";
+
+                showPage(
+                    "adminDashboard"
+                );
+
+                loadAdminContacts();
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to connect to backend"
+            );
+        }
+    }
+
+
+    /* =========================
+       ADMIN GET CONTACTS
+    ========================= */
+
+    async function loadAdminContacts() {
+
+        const token =
+            localStorage.getItem(
+                "adminToken"
+            );
+
+        if (!token) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/admin/contacts",
+                {
+                    method: "GET",
+
+                    headers: {
+
+                        /* ADMIN BEARER JWT */
+
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+            if (!response.ok) {
+
+                showMessage(
+                    "Unable to access admin contacts"
+                );
+
+                return;
+            }
+
+            const contacts =
+                await response.json();
+
+            const table =
+                document.getElementById(
+                    "adminContactsTable"
+                );
+
+            table.innerHTML = "";
+
+            if (contacts.length === 0) {
+
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="4">
+                            No contacts found
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            contacts.forEach(contact => {
+
+                const row =
+                    document.createElement("tr");
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHTML(contact.name)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(contact.phoneNo)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            String(contact.userId)
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="delete-btn"
+                            onclick='adminDeleteContact(
+                                ${JSON.stringify(contact._id)}
+                            )'
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+                `;
+
+                table.appendChild(row);
+
+            });
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to load admin contacts"
+            );
+        }
+    }
+
+
+    /* =========================
+       ADMIN DELETE
+    ========================= */
+
+    async function adminDeleteContact(id) {
+
+        if (
+            !confirm(
+                "Admin: delete this contact?"
+            )
+        ) {
+            return;
+        }
+
+        const token =
+            localStorage.getItem(
+                "adminToken"
+            );
+
+        try {
+
+            const response = await fetch(
+                API + "/admin/delete/" + id,
+                {
+                    method: "DELETE",
+
+                    headers: {
+
+                        /* ADMIN BEARER JWT */
+
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+            const data =
+                await response.text();
+
+            showMessage(data);
+
+            if (response.ok) {
+
+                loadAdminContacts();
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to delete contact"
+            );
+        }
+    }
+
+
+    /* =========================
+       ADMIN LOGOUT
+    ========================= */
+
+    function adminLogout() {
+
+        localStorage.removeItem(
+            "adminToken"
+        );
+
+        showMessage(
+            "Admin logged out successfully"
+        );
+
+        showPage("adminLogin");
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =========================
+       AUTO LOGIN
+    ========================= */
+
+    window.onload = function() {
+
+        const userToken =
+            localStorage.getItem(
+                "userToken"
+            );
+
+        const adminToken =
+            localStorage.getItem(
+                "adminToken"
+            );
+
+        if (userToken) {
+
+            showPage("dashboard");
+
+            loadContacts();
+
+        }
+        else if (adminToken) {
+
+            showPage("adminDashboard");
+
+            loadAdminContacts();
+
+        }
+        else {
+
+            showPage("home");
+        }
+    };
+
+</script>
+
+</body>
+</html>
