@@ -421,7 +421,7 @@ to `.gitignore`.
 ### 1. Clone the repository
 
 ```bash
-git clone 
+git clone https://github.com/vinaylv515206-ai/SecureContactManagementSystem.git
 ```
 
 ### 2. Open the project
